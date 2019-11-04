@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boilerplate/providers/artists_provider.dart';
 import 'package:flutter_boilerplate/providers/auth.dart';
-import 'package:flutter_boilerplate/providers/records.dart';
 import 'package:provider/provider.dart';
 
 import '../router.dart';
 import './bottom_navigation.dart';
+import '../providers/records_provider.dart';
 
 class TabNavigatorHome extends StatelessWidget {
   TabNavigatorHome({this.navigatorKey, this.tabItem});
@@ -13,10 +14,19 @@ class TabNavigatorHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProxyProvider<Auth, Records>(
-      builder: (ctx, auth, previousRecords) => Records(
-        previousRecords == null ? [] : previousRecords.items,
-      ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProxyProvider<Auth, RecordsProvider>(
+          builder: (ctx, auth, previousRecords) => RecordsProvider(
+            previousRecords == null ? [] : previousRecords.items,
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, ArtistsProvider>(
+          builder: (ctx, auth, previousArtists) => ArtistsProvider(
+            previousArtists == null ? [] : previousArtists.items,
+          ),
+        ),
+      ],
       child: Navigator(
           key: navigatorKey,
           initialRoute: '/home',

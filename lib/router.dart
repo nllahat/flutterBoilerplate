@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boilerplate/screens/home.dart';
 import './screens/login.dart';
+import './screens/edit_record.dart';
 
 class Router {
   static Route<dynamic> generateRouteLogister(RouteSettings settings) {
@@ -24,6 +25,8 @@ class Router {
     switch (settings.name) {
       case Home.routeName:
         return MaterialPageRoute(builder: (_) => Home());
+      case EditRecordScreen.routeName:
+        return MaterialPageRoute(builder: (_) => EditRecordScreen());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

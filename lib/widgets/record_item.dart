@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/record.dart';
+import '../providers/record_provider.dart';
 import '../providers/auth.dart';
 
 class RecordItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final record = Provider.of<Record>(context, listen: false);
+    final RecordProvider recordProvider = Provider.of<RecordProvider>(context, listen: false);
     final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         child: Image.network(
-          record.imageUrl,
+          recordProvider.record.imageUrl,
           fit: BoxFit.cover,
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
-          leading: Consumer<Record>(
-            builder: (ctx, product, _) => IconButton(
+          leading: Consumer<RecordProvider>(
+            builder: (ctx, record, _) => IconButton(
               icon: Icon(
-                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                record.record.isFavorite ? Icons.favorite : Icons.favorite_border,
               ),
               color: Theme.of(context).accentColor,
               onPressed: () {
@@ -33,7 +33,7 @@ class RecordItem extends StatelessWidget {
             ),
           ),
           title: Text(
-            record.title,
+            recordProvider.record.title,
             textAlign: TextAlign.center,
           ),
           /* trailing: IconButton(

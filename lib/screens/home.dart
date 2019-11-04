@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/records_grid.dart';
-import '../providers/records.dart';
+import '../providers/artists_provider.dart';
+import '../providers/records_provider.dart';
 import '../providers/auth.dart';
+import './edit_record.dart';
 
 class Home extends StatefulWidget {
   static const routeName = '/home';
@@ -27,7 +29,11 @@ class _HomeState extends State<Home> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Records>(context).fetchAndSetRecords().then((_) {
+      Provider.of<RecordsProvider>(context).fetchAndSetRecords()
+      .then((_) {
+        return Provider.of<ArtistsProvider>(context).fetchAndSetArtists();
+      })
+      .then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -44,7 +50,7 @@ class _HomeState extends State<Home> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-              Navigator.of(context).pushNamed(EditProductScreen.routeName);
+              Navigator.of(context).pushNamed(EditRecordScreen.routeName);
             },
         ),
           body: _isLoading

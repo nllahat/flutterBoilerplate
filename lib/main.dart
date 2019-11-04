@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
             cursorColor: Colors.white70,
             dividerTheme: DividerThemeData(
                 color: Colors.white70, thickness: 0.8, space: 10.0),
-            inputDecorationTheme: InputDecorationTheme(
+            /* inputDecorationTheme: InputDecorationTheme(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.white70),
               ),
@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
               ),
               textTheme: ButtonTextTheme.primary,
               padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-            ).data,
+            ).data, */
             primaryTextTheme: ThemeData.dark().textTheme.copyWith(
                   title: TextStyle(
                       fontWeight: FontWeight.bold,

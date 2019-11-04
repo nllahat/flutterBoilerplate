@@ -2,33 +2,35 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import './record.dart';
+import '../models/record.dart';
+import './record_provider.dart';
 
-class Records with ChangeNotifier {
-  List<Record> _items = [];
+class RecordsProvider with ChangeNotifier {
+  List<RecordProvider> _items = [];
   final CollectionReference _db = Firestore.instance.collection('records');
 
-  Records(this._items);
+  RecordsProvider(this._items);
 
-  List<Record> get items {
+  List<RecordProvider> get items {
     return [..._items];
   }
 
-  List<Record> get favoriteItems {
-    return _items.where((prodItem) => prodItem.isFavorite).toList();
+  List<RecordProvider> get favoriteItems {
+    return _items.where((prodItem) => prodItem.record.isFavorite).toList();
   }
 
-  Record findById(String id) {
-    return _items.firstWhere((record) => record.id == id);
+  RecordProvider findById(String id) {
+    return _items
+        .firstWhere((recordProvider) => recordProvider.record.id == id);
   }
 
   Future<void> fetchAndSetRecords([bool filterByUser = false]) async {
-    final List<Record> loadedRecords = [];
+    final List<RecordProvider> loadedRecords = [];
 
     try {
       QuerySnapshot docs = await _db.getDocuments();
       docs.documents.forEach((doc) {
-        loadedRecords.add(Record.fromFirestore(doc));
+        loadedRecords.add(RecordProvider(record: Record.fromFirestore(doc)));
       });
       _items = loadedRecords;
       notifyListeners();
@@ -37,37 +39,22 @@ class Records with ChangeNotifier {
     }
   }
 
-  /*Future<void> addProduct(Product product) async {
-    final url =
-        'https://flutter-update.firebaseio.com/products.json?auth=$authToken';
-    try {
-      final response = await http.post(
-        url,
-        body: json.encode({
-          'title': product.title,
-          'description': product.description,
-          'imageUrl': product.imageUrl,
-          'price': product.price,
-          'creatorId': userId,
-        }),
-      );
-      final newProduct = Product(
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl,
-        id: json.decode(response.body)['name'],
-      );
-      _items.add(newProduct);
-      // _items.insert(0, newProduct); // at the start of the list
-      notifyListeners();
-    } catch (error) {
-      print(error);
-      throw error;
-    }
+  Future<void> addRecord(Record record) {
+    Map<String, dynamic> jsonMap = record.toJson();
+    jsonMap["artist"] = _db.document("artists/${jsonMap["artist"]}");
+
+    return _db.add(jsonMap).then((DocumentReference value) {
+      value.get().then((onValue) {
+        final newRecord = Record.fromFirestore(onValue);
+        _items.add(RecordProvider(record: newRecord));
+        notifyListeners();
+      });
+    }).catchError((onError) {
+      throw onError;
+    });
   }
 
-  Future<void> updateProduct(String id, Product newProduct) async {
+  /*Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       final url =

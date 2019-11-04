@@ -34,4 +34,26 @@ class ValidatorUtil {
     else
       return null;
   }
+
+  static String validateTextInput(String value) {
+    if (value.isEmpty) {
+      return 'Please provide a value.';
+    }
+
+    return null;
+  }
+
+  static String validateNumberInput(String value) {
+    if (value.isEmpty) {
+      return 'Please enter a number.';
+    }
+    if (int.tryParse(value) == null) {
+      return 'Please enter a valid number.';
+    }
+
+    if (int.parse(value) <= 0) {
+      return 'Please enter a number greater than zero.';
+    }
+    return null;
+  }
 }

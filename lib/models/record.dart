@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
-class Record with ChangeNotifier {
+class Record {
   final String id;
   final String artist;
   final String title;
@@ -36,29 +34,12 @@ class Record with ChangeNotifier {
     );
   }
 
-  void _setFavValue(bool newValue) {
-    isFavorite = newValue;
-    notifyListeners();
-  }
-
-  Future<void> toggleFavoriteStatus(String token, String userId) async {
-    final oldStatus = isFavorite;
-    isFavorite = !isFavorite;
-    notifyListeners();
-    /* final url =
-        'https://flutter-update.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
-    try {
-      final response = await http.put(
-        url,
-        body: json.encode(
-          isFavorite,
-        ),
-      );
-      if (response.statusCode >= 400) {
-        _setFavValue(oldStatus);
-      }
-    } catch (error) {
-      _setFavValue(oldStatus);
-    } */
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "title": title,
+        "artist": artist,
+        "ration": rating,
+        "year": year,
+        "imageUrl": imageUrl
+      };
 }
