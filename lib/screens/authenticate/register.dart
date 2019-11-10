@@ -1,14 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_boilerplate/models/firebase_exception.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
-import '../providers/auth.dart';
-import '../utils/validation.dart';
+import '../../models/firebase_exception.dart';
+import '../../services/auth_service.dart';
+import '../../utils/validation.dart';
 
-enum LoginType { EmailAndPassword, Google }
+enum RegisterType { EmailAndPassword, Google }
 
-class Login extends StatelessWidget {
-  static const routeName = '/login';
+class Register extends StatelessWidget {
+  static const routeName = '/register';
+
+  final Function toggleView;
+  Register({this.toggleView});
 
   @override
   Widget build(BuildContext context) {
@@ -31,23 +34,24 @@ class Login extends StatelessWidget {
                     ),
                   )),
               Text(
-                'Please login to continue',
+                'Please register to continue',
                 style: Theme.of(context).primaryTextTheme.subtitle,
               ),
-              LoginForm(),
+              RegisterForm(toggleView: this.toggleView),
             ],
           ),
         )));
   }
 }
 
-class LoginForm extends StatefulWidget {
-  LoginForm({Key key}) : super(key: key);
+class RegisterForm extends StatefulWidget {
+  final Function toggleView;
+  RegisterForm({Key key, @required this.toggleView}) : super(key: key);
 
-  _LoginFormState createState() => _LoginFormState();
+  _RegisterFormState createState() => _RegisterFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _RegisterFormState extends State<RegisterForm> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   Map<String, String> _authData = {
     'email': '',
@@ -78,9 +82,9 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Widget _signInWithGoogleButton() {
+  Widget _signUpWithGoogleButton() {
     return RaisedButton(
-      onPressed: () => _submit(LoginType.Google),
+      onPressed: () => _submit(RegisterType.Google),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -97,29 +101,29 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Future<void> _submit(LoginType type) async {
+  Future<void> _submit(RegisterType type) async {
     setState(() {
       _isLoading = true;
     });
 
     try {
       switch (type) {
-        case LoginType.EmailAndPassword:
+        case RegisterType.EmailAndPassword:
           if (!_formKey.currentState.validate()) {
             // Invalid!
             return;
           }
           _formKey.currentState.save();
 
-          await Provider.of<Auth>(context, listen: false)
-              .signInWithEmailAndPassword(
+          await Provider.of<AuthService>(context, listen: false)
+              .registerWithEmailAndPassword(
             _authData['email'],
             _authData['password'],
           );
           break;
-        case LoginType.Google:
-          await Provider.of<Auth>(context, listen: false).signInWithGoogle();
-          break;
+        /* case LoginType.Google:
+          await Provider.of<AuthService>(context, listen: false).signInWithGoogle();
+          break; */
         default:
           throw new Exception('Unsupported login type');
       }
@@ -183,8 +187,8 @@ class _LoginFormState extends State<LoginForm> {
                         height: 10,
                       ),
                       RaisedButton(
-                        child: Text('Login'),
-                        onPressed: () => _submit(LoginType.EmailAndPassword),
+                        child: Text('Register'),
+                        onPressed: () => _submit(RegisterType.EmailAndPassword),
                       ),
                       SizedBox(
                         height: 10,
@@ -193,13 +197,13 @@ class _LoginFormState extends State<LoginForm> {
                       SizedBox(
                         height: 10,
                       ),
-                      _signInWithGoogleButton(),
+                      _signUpWithGoogleButton(),
                       SizedBox(
                         height: 30,
                       ),
                       FlatButton(
-                        child: Text('I don\'t have an account'),
-                        onPressed: () => '',
+                        child: Text('Already have an account?'),
+                        onPressed: () => widget.toggleView(),
                         padding:
                             EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

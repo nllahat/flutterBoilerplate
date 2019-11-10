@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boilerplate/screens/home.dart';
-import './screens/login.dart';
+import 'package:flutter_boilerplate/screens/authenticate/register.dart';
+import './screens/home_to_delete.dart';
+import './screens/authenticate/login.dart';
 import './screens/edit_record.dart';
 
 class Router {
@@ -8,8 +9,8 @@ class Router {
     switch (settings.name) {
       case Login.routeName:
         return MaterialPageRoute(builder: (_) => Login());
-      case '/signup':
-        return MaterialPageRoute(builder: (_) => Container(child: Text('Signup Page'),));
+      case Register.routeName:
+        return MaterialPageRoute(builder: (_) => Register());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(
@@ -42,8 +43,8 @@ class Router {
     switch (settings.name) {
       case Login.routeName:
         return MaterialPageRoute(builder: (_) => Login());
-      case '/signup':
-        return MaterialPageRoute(builder: (_) => Container(child: Text('Signup Page'),));
+      case Register.routeName:
+        return MaterialPageRoute(builder: (_) => Register());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(
