@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/records_grid.dart';
-import '../providers/artists_provider.dart';
-import '../providers/records_provider.dart';
-import '../providers/auth.dart';
-import './edit_record.dart';
-
 class Home extends StatefulWidget {
   static const routeName = '/home';
 
@@ -23,12 +17,13 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  @override
+  /* @override
   void didChangeDependencies() {
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
+
       Provider.of<RecordsProvider>(context).fetchAndSetRecords()
       .then((_) {
         return Provider.of<ArtistsProvider>(context).fetchAndSetArtists();
@@ -42,17 +37,17 @@ class _HomeState extends State<Home> {
     _isInit = false;
     super.didChangeDependencies();
   }
-
+ */
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
+        /* floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
               Navigator.of(context).pushNamed(EditRecordScreen.routeName);
             },
-        ),
+        ), */
           body: _isLoading
               ? Center(
                   child: CircularProgressIndicator(),
@@ -64,7 +59,7 @@ class _HomeState extends State<Home> {
                     SizedBox(
                       height: 10,
                     ),
-                    Flexible(child: RecordsGrid(false))
+                    Flexible(child: Container())
                   ],
                 )),
     );

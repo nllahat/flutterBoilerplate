@@ -19,10 +19,8 @@ class _AuthenticateState extends State<Authenticate> {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<AuthService>(
-      child: showSignIn
-          ? Login(toggleView: toggleView)
-          : Register(toggleView: toggleView),
-    );
+    return showSignIn
+        ? Login(toggleView: toggleView)
+        : Register(toggleView: toggleView);
   }
 }

@@ -1,6 +1,6 @@
 import '../models/user.dart';
 import '../screens/authenticate/authenticate.dart';
-import './home_to_delete.dart';
+import './home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
