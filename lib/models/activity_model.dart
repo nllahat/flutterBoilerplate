@@ -4,7 +4,7 @@ class Activity {
   final String id;
   final String name;
   final String generalDescription;
-  final GeoPoint location;
+  final String address;
   final bool isActive;
   final DateTime startDate;
   final DateTime endDate;
@@ -12,11 +12,27 @@ class Activity {
   final String image;
   final String organisation;
 
+  set name (String value) {
+    this.name = value;
+  }
+
+  set generalDescription (String value) {
+    this.generalDescription = value;
+  }
+
+  set isActive (bool value) {
+    this.isActive = value;
+  }
+
+  set startDate (DateTime value) {
+    this.startDate = value;
+  }
+
   Activity(
       {this.id,
       this.name,
       this.generalDescription,
-      this.location,
+      this.address,
       this.isActive,
       this.startDate,
       this.endDate,
@@ -28,7 +44,7 @@ class Activity {
         "id": id,
         "name": name,
         "generalDescription": generalDescription,
-        "location": location,
+        "address": address,
         "isActive": isActive,
         "startDate": startDate,
         "endDate": endDate,
@@ -49,7 +65,7 @@ class Activity {
         id: doc.documentID,
         name: data['name'] ?? '',
         generalDescription: data['generalDescription'] ?? '',
-        location: data['location'],
+        address: data['address'],
         isActive: data['isActive'] ?? false,
         startDate: startDate.toDate(),
         endDate: endDate.toDate(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boilerplate/screens/activities/edit_activity.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -42,12 +43,12 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        /* floatingActionButton: FloatingActionButton(
+        floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-              Navigator.of(context).pushNamed(EditRecordScreen.routeName);
+              Navigator.of(context).pushNamed(EditActivity.routeName);
             },
-        ), */
+        ),
           body: _isLoading
               ? Center(
                   child: CircularProgressIndicator(),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boilerplate/screens/authenticate/register.dart';
-import './screens/home_to_delete.dart';
+import './screens/home.dart';
 import './screens/authenticate/login.dart';
-import './screens/edit_record.dart';
+import './screens/activities/edit_activity.dart';
 
 class Router {
   static Route<dynamic> generateRouteLogister(RouteSettings settings) {
@@ -26,8 +26,8 @@ class Router {
     switch (settings.name) {
       case Home.routeName:
         return MaterialPageRoute(builder: (_) => Home());
-      case EditRecordScreen.routeName:
-        return MaterialPageRoute(builder: (_) => EditRecordScreen());
+      case EditActivity.routeName:
+        return MaterialPageRoute(builder: (_) => EditActivity());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

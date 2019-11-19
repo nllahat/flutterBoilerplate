@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
 
 import './navigation/tab_navigator_profile.dart';
 import './navigation/tab_navigator_home.dart';
 import './navigation/bottom_navigation.dart';
-import './providers/records_provider.dart';
-import './providers/auth.dart';
 
 class App extends StatefulWidget {
   @override
