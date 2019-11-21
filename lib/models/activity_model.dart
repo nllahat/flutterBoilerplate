@@ -28,6 +28,10 @@ class Activity {
     this.startDate = value;
   }
 
+  set endDate (DateTime value) {
+    this.endDate = value;
+  }
+
   Activity(
       {this.id,
       this.name,

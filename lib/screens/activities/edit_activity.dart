@@ -17,8 +17,9 @@ class _EditActivityState extends State<EditActivity> {
   var _nameController = TextEditingController();
   var _descriptionController = TextEditingController();
   var isSwitched = false;
+  DateTime startDate;
   var _isLoading = false;
-  var editedActivity = Activity(
+  Activity editedActivity = Activity(
     id: null,
     name: '',
     generalDescription: '',
@@ -90,8 +91,16 @@ class _EditActivityState extends State<EditActivity> {
     }
 
     AppFromDatePicker _getStartDateField() {
-      return AppFromDatePicker(onDateChange: (DateTime value) {
-        editedActivity.startDate = value;
+      return AppFromDatePicker(label: 'Start Date',onDateChange: (DateTime value) {
+        setState(() {
+            startDate = value;
+        });
+      });
+    }
+
+    AppFromDatePicker _getEndDateField() {
+      return AppFromDatePicker(label: 'End Date',onDateChange: (DateTime value) {
+        editedActivity.endDate = value;
       });
     }
 
@@ -122,7 +131,8 @@ class _EditActivityState extends State<EditActivity> {
                         children: <Widget>[
                           _getNameField(),
                           _getDescriptionField(),
-                          _getStartDateField()
+                          _getStartDateField(),
+                          _getEndDateField(),
                           //_getImageUrlField()
                         ],
                       ),
@@ -137,8 +147,9 @@ class _EditActivityState extends State<EditActivity> {
 
 class AppFromDatePicker extends StatefulWidget {
   final Function(DateTime date) onDateChange;
+  final String label;
 
-  AppFromDatePicker({@required this.onDateChange});
+  AppFromDatePicker({@required this.onDateChange, @required this.label});
 
   @override
   _AppFromDatePickerState createState() => _AppFromDatePickerState();
@@ -158,8 +169,8 @@ class _AppFromDatePickerState extends State<AppFromDatePicker> {
       onTap: () {
         DatePicker.showDatePicker(context,
             showTitleActions: true,
-            minTime: DateTime(1930),
-            maxTime: DateTime(_today.year - 5, _today.month, _today.day),
+            minTime: DateTime(_today.year),
+            // maxTime: DateTime(_today.year, _today.month, _today.day),
             theme: DatePickerTheme(
                 backgroundColor: Colors.white,
                 itemStyle:
@@ -174,7 +185,7 @@ class _AppFromDatePickerState extends State<AppFromDatePicker> {
         }, currentTime: DateTime.now(), locale: LocaleType.en);
       },
       leading: const Icon(Icons.today),
-      title: const Text('Start date'),
+      title: Text(widget.label),
       subtitle: _selectedDate != null ? Text(DateFormat('dd-MM-yyyy').format(_selectedDate)) : Text('Press to select a date'),
     );
   }
