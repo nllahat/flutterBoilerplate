@@ -11,7 +11,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var _isInit = true;
   var _isLoading = false;
 
   @override
@@ -19,27 +18,6 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  /* @override
-  void didChangeDependencies() {
-    if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      Provider.of<RecordsProvider>(context).fetchAndSetRecords()
-      .then((_) {
-        return Provider.of<ArtistsProvider>(context).fetchAndSetArtists();
-      })
-      .then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
-    }
-    _isInit = false;
-    super.didChangeDependencies();
-  }
- */
   @override
   Widget build(BuildContext context) {
     return SafeArea(

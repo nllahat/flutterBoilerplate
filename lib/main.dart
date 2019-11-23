@@ -1,10 +1,12 @@
+import 'package:flutter_boilerplate/services/user_service.dart';
+
 import './router.dart';
 
 import './screens/wrapper.dart';
 import './services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import './models/user.dart';
+import './models/user_model.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,11 +16,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          Provider<AuthService>.value(value: AuthService()),
+          Provider<UserService>.value(value: UserService()),
+          ProxyProvider<UserService, AuthService>(
+            builder: (ctx, userService, authService) =>
+                AuthService(userService: userService),
+          )
         ],
         child: Consumer<AuthService>(
-          builder: (ctx, auth, _) => StreamProvider<User>.value(
-            value: auth.user,
+          builder: (ctx, auth, _) => StreamProvider<Status>.value(
+            value: auth.status,
             child: MaterialApp(
               title: 'MyApp',
               theme: ThemeData(

@@ -1,5 +1,6 @@
+
+import '../services/auth_service.dart';
 import '../app.dart';
-import '../models/user.dart';
 import '../screens/authenticate/authenticate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,13 +8,20 @@ import 'package:provider/provider.dart';
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    final Status authStatus = Provider.of<Status>(context);
 
-    // return either the Home or Authenticate widget
-    if (user == null) {
-      return Authenticate();
-    } else {
-      return App();
+    switch (authStatus) {
+      case Status.Unauthenticated:
+        return Authenticate();
+        break;
+      case Status.NoUser:
+        return Container();
+        break;
+      case Status.Authenticated:
+        return App();
+        break;
+      default:
+        return Authenticate();
     }
   }
 }

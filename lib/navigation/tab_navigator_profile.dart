@@ -12,7 +12,7 @@ class TabNavigatorProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Navigator(
         key: navigatorKey,
-        initialRoute: '/',
+        initialRoute: '/profile',
         onGenerateRoute: Router.generateRouteProfile,
         onUnknownRoute: (settings) => MaterialPageRoute(
               builder: (_) => Scaffold(

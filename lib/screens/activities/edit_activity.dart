@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter_boilerplate/models/activity_model.dart';
 import 'package:flutter_boilerplate/models/organization_model.dart';
 import 'package:flutter_boilerplate/services/activities_service.dart';
@@ -9,7 +7,6 @@ import 'package:flutter_boilerplate/utils/validation.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:dropdownfield/dropdownfield.dart';
 import 'package:provider/provider.dart';
 
 class EditActivity extends StatefulWidget {

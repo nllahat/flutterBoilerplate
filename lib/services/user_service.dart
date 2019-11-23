@@ -1,31 +1,19 @@
-import '../models/user.dart';
+import '../models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserService {
-  final String uid;
-  UserService({ this.uid });
+  UserService();
 
   // collection reference
-  final CollectionReference usersDataCollection = Firestore.instance.collection('users_data');
+  final CollectionReference usersCollection = Firestore.instance.collection('users');
 
-  Future<void> updateUserData(String name) async {
-    return await usersDataCollection.document(uid).setData({
-      'name': name
-    });
+  Future<User> getUser(String id) async {
+    DocumentSnapshot doc = await usersCollection.document(id).get();
+
+    if (doc.exists == false) {
+      return null;
+    }
+
+    return User.fromFirestore(doc);
   }
-
-  // user data from snapshots
-  UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
-    return UserData(
-      uid: uid,
-      name: snapshot.data['name']
-    );
-  }
-
-  // get user doc stream
-  Stream<UserData> get userData {
-    return usersDataCollection.document(uid).snapshots()
-      .map(_userDataFromSnapshot);
-  }
-
 }
