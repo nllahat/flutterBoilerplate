@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boilerplate/screens/authenticate/register.dart';
+import 'package:flutter_boilerplate/screens/organizations/edit_organization.dart';
 import './screens/home.dart';
 import './screens/authenticate/login.dart';
 import './screens/activities/edit_activity.dart';
@@ -28,6 +29,8 @@ class Router {
         return MaterialPageRoute(builder: (_) => Home());
       case EditActivity.routeName:
         return MaterialPageRoute(builder: (_) => EditActivity());
+      case EditOrganization.routeName:
+        return MaterialPageRoute(builder: (_) => EditOrganization());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

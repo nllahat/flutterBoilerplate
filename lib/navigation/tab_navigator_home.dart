@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boilerplate/services/activities_service.dart';
+import 'package:flutter_boilerplate/services/organizations_service.dart';
 import 'package:provider/provider.dart';
 
 import '../router.dart';
@@ -13,7 +15,8 @@ class TabNavigatorHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-
+        Provider<OrganizationService>.value(value: OrganizationService()),
+        Provider<ActivitiesService>.value(value: ActivitiesService()),
       ],
       child: Navigator(
           key: navigatorKey,

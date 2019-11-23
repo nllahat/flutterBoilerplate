@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class Activity {
   final String id;
@@ -10,42 +11,21 @@ class Activity {
   final DateTime endDate;
   final List<String> coordinators;
   final String image;
-  final String organisation;
-
-  set name (String value) {
-    this.name = value;
-  }
-
-  set generalDescription (String value) {
-    this.generalDescription = value;
-  }
-
-  set isActive (bool value) {
-    this.isActive = value;
-  }
-
-  set startDate (DateTime value) {
-    this.startDate = value;
-  }
-
-  set endDate (DateTime value) {
-    this.endDate = value;
-  }
+  final String organization;
 
   Activity(
-      {this.id,
-      this.name,
-      this.generalDescription,
-      this.address,
-      this.isActive,
-      this.startDate,
-      this.endDate,
-      this.coordinators,
-      this.image,
-      this.organisation});
+      {@required this.id,
+      @required this.name,
+      @required this.generalDescription,
+      @required this.address,
+      @required this.isActive,
+      @required this.startDate,
+      @required this.endDate,
+      @required this.coordinators,
+      @required this.image,
+      @required this.organization});
 
   Map<String, dynamic> toJson() => {
-        "id": id,
         "name": name,
         "generalDescription": generalDescription,
         "address": address,
@@ -54,14 +34,14 @@ class Activity {
         "endDate": endDate,
         "coordinators": coordinators,
         "image": image,
-        "organisation": organisation
+        "organization": organization
       };
 
   factory Activity.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data;
     List<DocumentReference> coordinatoresDocRef =
         new List<DocumentReference>.from(data['coordinators']);
-    DocumentReference organisationRef = data['organisation'];
+    DocumentReference organizationRef = data['organization'];
     Timestamp startDate = data['startDate'];
     Timestamp endDate = data['endDate'];
 
@@ -76,6 +56,6 @@ class Activity {
         coordinators:
             coordinatoresDocRef.map((elem) => elem.documentID).toList(),
         image: data['image'] ?? '',
-        organisation: organisationRef.documentID);
+        organization: organizationRef.documentID);
   }
 }

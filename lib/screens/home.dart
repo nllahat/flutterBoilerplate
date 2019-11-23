@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boilerplate/screens/activities/edit_activity.dart';
+import 'package:flutter_boilerplate/screens/organizations/edit_organization.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -43,26 +44,26 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
               Navigator.of(context).pushNamed(EditActivity.routeName);
             },
-        ),
+          ),
           body: _isLoading
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Flexible(child: Container())
-                  ],
-                )),
+              : SingleChildScrollView(
+                child: Container(
+                  child: FlatButton(
+                    child: Text('Add organization'),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(EditOrganization.routeName);
+                    },
+                  ),
+                ),
+              )),
     );
   }
 }
