@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
             value: auth.status,
             child: MaterialApp(
               title: 'MyApp',
-              theme: ThemeData(
+              /* theme: ThemeData(
                 primaryColor: Color.fromRGBO(68, 79, 90, 1),
                 accentColor: Colors.redAccent.shade100,
                 backgroundColor: Color.fromRGBO(68, 79, 90, 1),
@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
                       button: TextStyle(color: Colors.white70),
                       subtitle: TextStyle(fontSize: 18, color: Colors.black),
                     ),
-              ),
+              ),*/
               home: Wrapper(),
               onGenerateRoute: Router.generateRouteLogister,
               onUnknownRoute: (settings) => MaterialPageRoute(

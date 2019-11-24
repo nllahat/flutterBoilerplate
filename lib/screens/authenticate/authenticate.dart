@@ -1,3 +1,4 @@
+import 'package:flutter_boilerplate/screens/authenticate/logister.dart';
 import 'package:flutter_boilerplate/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -11,16 +12,8 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
-  bool showSignIn = true;
-  void toggleView() {
-    //print(showSignIn.toString());
-    setState(() => showSignIn = !showSignIn);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return showSignIn
-        ? Login(toggleView: toggleView)
-        : Register(toggleView: toggleView);
+    return Logister();
   }
 }

@@ -15,7 +15,7 @@ class Wrapper extends StatelessWidget {
         return Authenticate();
         break;
       case Status.NoUser:
-        return Container();
+        return Authenticate();
         break;
       case Status.Authenticated:
         return App();
