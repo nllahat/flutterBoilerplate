@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boilerplate/screens/authenticate/logister.dart';
 import 'package:flutter_boilerplate/screens/authenticate/register.dart';
 import 'package:flutter_boilerplate/screens/organizations/edit_organization.dart';
 import 'package:flutter_boilerplate/screens/profile/profile.dart';
 import './screens/home.dart';
-import './screens/authenticate/login.dart';
 import './screens/activities/edit_activity.dart';
 
 class Router {
   static Route<dynamic> generateRouteLogister(RouteSettings settings) {
     switch (settings.name) {
-      case Login.routeName:
-        return MaterialPageRoute(builder: (_) => Login());
+      case Logister.routeName:
+        return MaterialPageRoute(builder: (_) => Logister());
       case Register.routeName:
         return MaterialPageRoute(builder: (_) => Register());
       default:

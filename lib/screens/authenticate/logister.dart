@@ -4,7 +4,6 @@ import 'package:flutter_boilerplate/screens/authenticate/register.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/auth_service.dart';
-import '../../utils/validation.dart';
 
 enum LogisterType { EmailAndPassword, Google }
 

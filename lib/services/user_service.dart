@@ -16,4 +16,18 @@ class UserService {
 
     return User.fromFirestore(doc);
   }
+
+  Future<User> addUser(User user) async {
+    Map<String, dynamic> jsonMap = user.toJson();
+
+    try {
+      DocumentReference docRef = await usersCollection.add(jsonMap);
+      print("Document written with ID: ${docRef.documentID}");
+
+      return User.fromFirestore(await docRef.get());
+    } catch (e) {
+      print("Error adding document: $e");
+      throw e;
+    }
+  }
 }

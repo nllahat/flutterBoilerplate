@@ -21,8 +21,7 @@ class AuthService {
 
   AuthService({@required this.userService});
 
-  // create user obj based on firebase user
-  Future<Status> _authStatusFromFirebaseUser(FirebaseUser user) async {
+  Future<Status> authStatusFromFirebaseUser(FirebaseUser user) async {
     if (user == null) {
       return Status.Unauthenticated;
     }
@@ -37,8 +36,8 @@ class AuthService {
   }
 
   // auth change user stream
-  Stream<Status> get status {
-    return _auth.onAuthStateChanged.asyncMap(this._authStatusFromFirebaseUser);
+  Stream<FirebaseUser> get firebaseUser {
+    return _auth.onAuthStateChanged;
   }
 
   // sign in anon

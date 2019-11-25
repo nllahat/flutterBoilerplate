@@ -1,13 +1,12 @@
-import 'package:flutter_boilerplate/models/activity_model.dart';
-import 'package:flutter_boilerplate/models/organization_model.dart';
-import 'package:flutter_boilerplate/services/activities_service.dart';
-import 'package:flutter_boilerplate/services/organizations_service.dart';
-import 'package:flutter_boilerplate/utils/validation.dart';
-
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import '../../services/activities_service.dart';
+import '../../services/organizations_service.dart';
+import '../../utils/validation.dart';
+import '../../models/organization_model.dart';
+import '../../models/activity_model.dart';
+import '../../common/widgets/custom_date_picker.dart';
 
 class EditActivity extends StatefulWidget {
   static const routeName = '/editActivity';
@@ -127,8 +126,8 @@ class _EditActivityState extends State<EditActivity> {
     );
   }
 
-  AppFromDatePicker _getStartDateField() {
-    return AppFromDatePicker(
+  CustomDatePicker _getStartDateField() {
+    return CustomDatePicker(
         currentDate: _editedActivity.startDate,
         label: 'Start Date',
         onDateChange: (DateTime value) {
@@ -146,8 +145,8 @@ class _EditActivityState extends State<EditActivity> {
         });
   }
 
-  AppFromDatePicker _getEndDateField() {
-    return AppFromDatePicker(
+  CustomDatePicker _getEndDateField() {
+    return CustomDatePicker(
         currentDate: _editedActivity.endDate,
         label: 'End Date',
         onDateChange: (DateTime value) {
@@ -379,50 +378,3 @@ class _EditActivityState extends State<EditActivity> {
   }
 }
 
-class AppFromDatePicker extends StatefulWidget {
-  final Function(DateTime date) onDateChange;
-  final String label;
-  final DateTime currentDate;
-
-  AppFromDatePicker(
-      {@required this.onDateChange, @required this.label, this.currentDate});
-
-  @override
-  _AppFromDatePickerState createState() => _AppFromDatePickerState();
-}
-
-class _AppFromDatePickerState extends State<AppFromDatePicker> {
-  DateTime _selectedDate;
-  DateTime _today = DateTime.now();
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.currentDate != null) {
-      _selectedDate = widget.currentDate;
-    }
-
-    if (_today == null) {
-      return Container();
-    }
-
-    return ListTile(
-      onTap: () {
-        DatePicker.showDatePicker(context,
-            showTitleActions: true,
-            minTime: DateTime(_today.year),
-            onConfirm: (date) {
-          if (date != null) {
-            widget.onDateChange(date);
-            setState(() => _selectedDate = date);
-          }
-          // selectedDate = date;
-        }, currentTime: DateTime.now(), locale: LocaleType.en);
-      },
-      leading: const Icon(Icons.today),
-      title: Text(widget.label),
-      subtitle: _selectedDate != null
-          ? Text(DateFormat('dd-MM-yyyy').format(_selectedDate))
-          : Text('Press to select a date'),
-    );
-  }
-}
