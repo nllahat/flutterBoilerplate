@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
         providers: [
           Provider<UserService>.value(value: UserService()),
           ProxyProvider<UserService, AuthService>(
-            builder: (ctx, userService, authService) =>
+            builder: (ctx, userService, _) =>
                 AuthService(userService: userService),
-          )
+          ),
         ],
         child: MaterialApp(
           title: 'forward',

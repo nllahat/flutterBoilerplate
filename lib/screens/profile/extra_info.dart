@@ -51,13 +51,9 @@ class ExtraInfo extends StatelessWidget {
                     value: UserService(),
                     child: Consumer<UserService>(
                       builder: (context, userSerivce, _) {
-                        return FutureProvider.value(
-                          value: userSerivce.getUser(firebaseUser.uid),
-                          child: Consumer<User>(
-                            builder: (context, user, _) =>
-                                ExtraInfoForm(user: user),
-                          ),
-                        );
+                        return FutureProvider<User>.value(
+                            value: userSerivce.getUser(firebaseUser.uid),
+                            child: ExtraInfoForm());
                       },
                     )),
               ],
@@ -68,13 +64,8 @@ class ExtraInfo extends StatelessWidget {
 }
 
 class ExtraInfoForm extends StatefulWidget {
-  final User user;
-  final String uid;
-
   ExtraInfoForm({
     Key key,
-    @required this.user,
-    @required this.uid,
   }) : super(key: key);
 
   _ExtraInfoFormState createState() => _ExtraInfoFormState();
@@ -88,6 +79,24 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
     gender: Gender.Other,
   );
   var _isLoading = false;
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      User user = Provider.of<User>(context, listen: false);
+      FirebaseUser fbUser = Provider.of<FirebaseUser>(context, listen: false);
+
+      if (user != null) {
+        _editedUser = user;
+      } else {
+        _editedUser =
+            User(id: fbUser.uid, birthDate: null, gender: Gender.Other);
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   RadioButtonGroup _getGenderRadioButtons() {
     return RadioButtonGroup(
@@ -152,39 +161,28 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
       _isLoading = true;
     });
 
-    if (_editedUser.id != null) {
-      return;
-      /* await Provider.of<Products>(context, listen: false)
-            .updateProduct(_editedProduct.id, _editedProduct); */
-    } else {
-      try {
-        User newUser = await Provider.of<UserService>(context, listen: false)
-            .addUser(_editedUser);
-        print('New user was added ${newUser.id}');
-      } catch (error) {
-        print(error);
-        await showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text('An error occurred!'),
-            content: Text('Something went wrong.'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Okay'),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-              )
-            ],
-          ),
-        );
-      }
+    try {
+      User newUser = await Provider.of<UserService>(context, listen: false)
+          .setOrAddUser(_editedUser);
+      print('New user was added ${newUser.id}');
+    } catch (error) {
+      print(error);
+      await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('An error occurred!'),
+          content: Text('Something went wrong.'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            )
+          ],
+        ),
+      );
     }
-
-    setState(() {
-      _isLoading = false;
-    });
-    Navigator.of(context).pop();
   }
 
   Widget _doneButton() {
@@ -204,10 +202,6 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.user != null) {
-      _editedUser = widget.user;
-    }
-
     final deviceSize = MediaQuery.of(context).size;
 
     return Container(

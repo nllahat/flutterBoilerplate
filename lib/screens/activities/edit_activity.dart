@@ -313,6 +313,15 @@ class _EditActivityState extends State<EditActivity> {
   }
 
   @override
+  void dispose() {
+    _nameFocus.dispose();
+    _descriptionFocus.dispose();
+    _addressFocus.dispose();
+    _imageFocus.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

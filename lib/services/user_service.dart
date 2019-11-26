@@ -5,7 +5,8 @@ class UserService {
   UserService();
 
   // collection reference
-  final CollectionReference usersCollection = Firestore.instance.collection('users');
+  final CollectionReference usersCollection =
+      Firestore.instance.collection('users');
 
   Future<User> getUser(String id) async {
     DocumentSnapshot doc = await usersCollection.document(id).get();
@@ -29,5 +30,40 @@ class UserService {
       print("Error adding document: $e");
       throw e;
     }
+  }
+
+  Future<User> setOrAddUser(User user) async {
+    Map<String, dynamic> jsonMap = user.toJson();
+
+    try {
+      DocumentReference docRef = usersCollection.document(user.id);
+      await docRef.setData(jsonMap, merge: true);
+      print("Document updated with ID: ${docRef.documentID}");
+
+      return User.fromFirestore(await docRef.get());
+    } catch (e) {
+      print("Error adding document: $e");
+      throw e;
+    }
+  }
+
+  Stream<User> getUserStream(String id) {
+    if (id == null) {
+      return null;
+    }
+
+    DocumentReference docRef = usersCollection.document(id);
+
+    if (docRef == null) {
+      return null;
+    }
+
+    return docRef.snapshots().map((doc) {
+      if (!doc.exists) {
+        return null;
+      }
+
+      return User.fromFirestore(doc);
+    });
   }
 }

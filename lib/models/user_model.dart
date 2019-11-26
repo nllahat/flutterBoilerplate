@@ -1,15 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 
 enum Gender { Female, Male, Other }
+enum Role { Admin, Coordinator, Regular }
 
 class User {
   final String id;
   final Gender gender;
   final DateTime birthDate;
+  final Role role;
 
-  User({@required this.id, @required this.gender, @required this.birthDate});
+  User(
+      {@required this.id,
+      @required this.gender,
+      @required this.birthDate,
+      @required this.role});
 
   String getGenderString() {
     String stringGender;
@@ -22,41 +27,91 @@ class User {
         stringGender = "male";
         break;
       case Gender.Other:
-        stringGender = "else";
+        stringGender = "other";
         break;
       default:
-        stringGender = "else";
+        stringGender = "other";
     }
 
     return stringGender;
   }
 
-  Map<String, dynamic> toJson() {
-    return {"id": id, "gender": getGenderString(), "birthDate": birthDate};
+  String getRoleString() {
+    String stringRole;
+
+    switch (role) {
+      case Role.Admin:
+        stringRole = "admin";
+        break;
+      case Role.Coordinator:
+        stringRole = "coordinator";
+        break;
+      case Role.Regular:
+        stringRole = "regular";
+        break;
+      default:
+        stringRole = "regular";
+    }
+
+    return stringRole;
   }
+
+  static Gender getGenderEnum(String gender) {
+    Gender enumGender;
+
+    switch (gender) {
+      case "female":
+        enumGender = Gender.Female;
+        break;
+      case "male":
+        enumGender = Gender.Male;
+        break;
+      case "other":
+        enumGender = Gender.Other;
+        break;
+      default:
+        enumGender = Gender.Other;
+    }
+
+    return enumGender;
+  }
+
+  static Role getRoleEnum(String role) {
+    Role enumRole;
+
+    switch (role) {
+      case "admin":
+        enumRole = Role.Admin;
+        break;
+      case "coordinator":
+        enumRole = Role.Coordinator;
+        break;
+      case "regular":
+        enumRole = Role.Regular;
+        break;
+      default:
+        enumRole = Role.Regular;
+    }
+
+    return enumRole;
+  }
+
+  Map<String, dynamic> toJson() => {
+        "gender": getGenderString(),
+        "birthDate": birthDate,
+        "role": getRoleString()
+      };
 
   factory User.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data;
-    Gender gender;
+    Gender gender = getGenderEnum(data["gender"]);
     Timestamp birthDate = data["birthDate"];
-
-    switch (data["gender"]) {
-      case "female":
-        gender = Gender.Female;
-        break;
-      case "male":
-        gender = Gender.Male;
-        break;
-      case "else":
-        gender = Gender.Other;
-        break;
-      default:
-    }
+    Role role = getRoleEnum(data["role"]);
 
     return User(
-      id: doc.documentID,
-      gender: gender,
-      birthDate: birthDate.toDate(),
-    );
+        id: doc.documentID,
+        gender: gender,
+        birthDate: birthDate?.toDate(),
+        role: role);
   }
 }

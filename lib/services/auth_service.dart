@@ -21,12 +21,10 @@ class AuthService {
 
   AuthService({@required this.userService});
 
-  Future<Status> authStatusFromFirebaseUser(FirebaseUser user) async {
-    if (user == null) {
+  Future<Status> authStatusFromFirebaseUser(FirebaseUser fbUser, User appUser) async {
+    if (fbUser == null) {
       return Status.Unauthenticated;
     }
-
-    User appUser = await userService.getUser(user.uid);
 
     if (appUser == null) {
       return Status.NoUser;

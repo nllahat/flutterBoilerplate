@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boilerplate/screens/admin/admin.dart';
 import 'package:flutter_boilerplate/screens/authenticate/logister.dart';
 import 'package:flutter_boilerplate/screens/authenticate/register.dart';
 import 'package:flutter_boilerplate/screens/organizations/edit_organization.dart';
@@ -47,6 +48,21 @@ class Router {
     switch (settings.name) {
       case Profile.routeName:
         return MaterialPageRoute(builder: (_) => Profile());
+      default:
+        return MaterialPageRoute(builder: (_) {
+          return Scaffold(
+            body: Center(
+              child: Text('No route defined for ${settings.name}'),
+            ),
+          );
+        });
+    }
+  }
+
+  static Route<dynamic> generateRouteAdmin(RouteSettings settings) {
+    switch (settings.name) {
+      case Admin.routeName:
+        return MaterialPageRoute(builder: (_) => Admin());
       default:
         return MaterialPageRoute(builder: (_) {
           return Scaffold(

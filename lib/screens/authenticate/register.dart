@@ -110,6 +110,8 @@ class _RegisterFormState extends State<RegisterForm> {
             _authData['email'],
             _authData['password'],
           );
+
+          Navigator.of(context).pop();
           break;
         default:
           throw new Exception('Unsupported register type');

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boilerplate/navigation/tab_navigator_admin.dart';
+import 'package:provider/provider.dart';
 
 import './navigation/tab_navigator_profile.dart';
 import './navigation/tab_navigator_home.dart';
 import './navigation/bottom_navigation.dart';
+import 'models/user_model.dart';
 
 class App extends StatefulWidget {
   @override
@@ -14,7 +17,7 @@ class AppState extends State<App> {
   Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
     TabItem.home: GlobalKey<NavigatorState>(),
     TabItem.profile: GlobalKey<NavigatorState>(),
-    TabItem.explore: GlobalKey<NavigatorState>(),
+    // TabItem.admin: GlobalKey<NavigatorState>(),
   };
 
   void _selectTab(TabItem tabItem) {
@@ -29,16 +32,28 @@ class AppState extends State<App> {
       onWillPop: () async =>
           !await navigatorKeys[currentTab].currentState.maybePop(),
       child: Scaffold(
-        body: Stack(children: <Widget>[
-          _buildOffstageNavigator(TabItem.home),
-          _buildOffstageNavigator(TabItem.profile),
-          _buildOffstageNavigator(TabItem.explore),
-        ]),
-        bottomNavigationBar: BottomNavigation(
-          currentTab: currentTab,
-          onSelectTab: _selectTab,
-        ),
-      ),
+          body: Stack(children: <Widget>[
+            _buildOffstageNavigator(TabItem.home),
+            _buildOffstageNavigator(TabItem.profile),
+            Consumer<User>(
+              builder: (context, user, _) {
+                if (user != null && user.role == Role.Admin) {
+                  return _buildOffstageNavigator(TabItem.admin);
+                } else {
+                  return Container();
+                }
+              },
+            )
+          ]),
+          bottomNavigationBar: Consumer<User>(
+            builder: (context, user, _) {
+              return BottomNavigation(
+                currentTab: currentTab,
+                onSelectTab: _selectTab,
+                userRole: user == null ? null : user.role,
+              );
+            },
+          )),
     );
   }
 
@@ -57,6 +72,15 @@ class AppState extends State<App> {
         return Offstage(
           offstage: currentTab != tabItem,
           child: TabNavigatorProfile(
+            navigatorKey: navigatorKeys[tabItem],
+            tabItem: tabItem,
+          ),
+        );
+        break;
+      case TabItem.admin:
+        return Offstage(
+          offstage: currentTab != tabItem,
+          child: TabNavigatorAdmin(
             navigatorKey: navigatorKeys[tabItem],
             tabItem: tabItem,
           ),

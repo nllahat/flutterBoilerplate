@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boilerplate/models/user_model.dart';
 
-enum TabItem { home, profile, explore }
+enum TabItem { home, profile, admin }
 
 class TabHelper {
   static TabItem item({int index}) {
@@ -10,7 +11,7 @@ class TabHelper {
       case 1:
         return TabItem.profile;
       case 2:
-        return TabItem.explore;
+        return TabItem.admin;
       default:
         return TabItem.home;
     }
@@ -22,8 +23,8 @@ class TabHelper {
         return 'Home';
       case TabItem.profile:
         return 'Profile';
-      case TabItem.explore:
-        return 'Explore';
+      case TabItem.admin:
+        return 'Admin';
       default:
         return 'Home';
     }
@@ -35,8 +36,8 @@ class TabHelper {
         return Icons.home;
       case TabItem.profile:
         return Icons.person;
-      case TabItem.explore:
-        return Icons.explore;
+      case TabItem.admin:
+        return Icons.verified_user;
       default:
         return Icons.person;
     }
@@ -48,19 +49,25 @@ class TabHelper {
 }
 
 class BottomNavigation extends StatelessWidget {
-  BottomNavigation({this.currentTab, this.onSelectTab});
+  BottomNavigation({this.currentTab, this.onSelectTab, this.userRole});
   final TabItem currentTab;
   final ValueChanged<TabItem> onSelectTab;
+  final Role userRole;
 
   @override
   Widget build(BuildContext context) {
+    List<BottomNavigationBarItem> items = List<BottomNavigationBarItem>();
+
+    items.add(_buildItem(tabItem: TabItem.home));
+    items.add(_buildItem(tabItem: TabItem.profile));
+
+    if (userRole == Role.Admin) {
+      items.add(_buildItem(tabItem: TabItem.admin));
+    }
+
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      items: [
-        _buildItem(tabItem: TabItem.home),
-        _buildItem(tabItem: TabItem.profile),
-        _buildItem(tabItem: TabItem.explore),
-      ],
+      items: items,
       onTap: (index) => onSelectTab(
         TabHelper.item(index: index),
       ),
