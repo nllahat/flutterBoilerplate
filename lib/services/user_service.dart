@@ -18,6 +18,20 @@ class UserService {
     return User.fromFirestore(doc);
   }
 
+  List<User> _getUsersListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) => User.fromFirestore(doc)).toList();
+  }
+
+  User _getUserFromDocumentSnapshot(DocumentSnapshot snapshot) {
+    return User.fromFirestore(snapshot);
+  }
+
+  Future<List<User>> get users {
+    return usersCollection.getDocuments().then((QuerySnapshot qs) {
+      return qs.documents.map(_getUserFromDocumentSnapshot).toList();
+    });
+  }
+
   Future<User> addUser(User user) async {
     Map<String, dynamic> jsonMap = user.toJson();
 
