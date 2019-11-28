@@ -41,6 +41,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
           // selectedDate = date;
         }, currentTime: DateTime.now(), locale: LocaleType.en);
       },
+      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
       leading: const Icon(Icons.today),
       title: Text(widget.label),
       subtitle: _selectedDate != null

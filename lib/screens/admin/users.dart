@@ -11,25 +11,52 @@ class Users extends StatefulWidget {
 }
 
 class _UsersState extends State<Users> {
+  List<User> _users;
   @override
   void initState() {
-    Future<List<User>> usersFuture = Provider.of<UserService>(context, listen: false).users;
+    Provider.of<UserService>(context, listen: false).users.then((users) {
+      _users = users;
+    }).catchError((error) {
+      print(error);
+    });
 
+    super.initState();
   }
+
+  Color _getIconColorByRole(Role role) {
+    switch (role) {
+      case Role.Admin:
+        return Colors.black;
+      case Role.Coordinator:
+        return Colors.orangeAccent;
+      case Role.Regular:
+        return Colors.grey;
+      default:
+        return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
-
-    return FutureProvider.value(
-        value: usersFuture,
-        child: Consumer<List<User>>(
-          builder: (context, users, _) {
-            return ListView.builder(
-                itemCount: users?.length,
-                itemBuilder: (BuildContext ctxt, int index) {
-                  return new Text(users[index].id);
-                });
-          },
-        ));
+    return ListView.builder(
+        itemCount: _users?.length,
+        itemBuilder: (BuildContext ctxt, int index) {
+          var user = _users?.elementAt(index);
+          return ListTile(
+            leading: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.account_circle,
+                  size: 40.0,
+                  color: _getIconColorByRole(user?.role),
+                ),
+              ],
+            ),
+            title: Text(user?.fullName ?? ''),
+            subtitle:
+                Text(user?.role?.toString()?.split('.')?.elementAt(1) ?? ''),
+          );
+        });
   }
 }

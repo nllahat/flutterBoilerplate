@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_boilerplate/models/user_model.dart';
-import 'package:flutter_boilerplate/services/auth_service.dart';
-import 'package:flutter_boilerplate/services/user_service.dart';
-import '../../common/widgets/custom_date_picker.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:provider/provider.dart';
+
+import '../../models/user_model.dart';
+import '../../services/user_service.dart';
+import '../../services/auth_service.dart';
+import '../../utils/validation.dart';
+import '../../common/widgets/custom_date_picker.dart';
 
 class ExtraInfo extends StatelessWidget {
   static const routeName = '/exterInfo';
@@ -73,35 +75,148 @@ class ExtraInfoForm extends StatefulWidget {
 
 class _ExtraInfoFormState extends State<ExtraInfoForm> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  final FocusNode _nameFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _phoneNumberFocus = FocusNode();
+  var _phoneNumberController = TextEditingController();
+  var _emailController = TextEditingController();
+  final _nameController = TextEditingController();
   User _editedUser = User(
-    id: null,
-    birthDate: null,
-    gender: Gender.Other,
-  );
+      id: null,
+      fullName: '',
+      email: '',
+      phoneNumber: '',
+      birthDate: null,
+      gender: Gender.Other,
+      role: Role.Regular);
   var _isLoading = false;
   var _isInit = true;
 
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      User user = Provider.of<User>(context, listen: false);
-      FirebaseUser fbUser = Provider.of<FirebaseUser>(context, listen: false);
+      User user = Provider.of<User>(context);
+      FirebaseUser fbUser = Provider.of<FirebaseUser>(context);
 
       if (user != null) {
         _editedUser = user;
       } else {
-        _editedUser =
-            User(id: fbUser.uid, birthDate: null, gender: Gender.Other);
+        _editedUser = User(
+            id: fbUser.uid,
+            fullName: fbUser.displayName,
+            email: fbUser.email,
+            phoneNumber: fbUser.phoneNumber,
+            birthDate: null,
+            gender: Gender.Other,
+            role: Role.Regular);
+        _nameController.text = fbUser.displayName;
+        _emailController.text = fbUser.email;
+        _phoneNumberController.text = fbUser.phoneNumber;
+        /* _initValues = {
+          'id': _editedUser.id,
+          'fullName': _editedUser.fullName,
+          'email': _editedUser.email,
+          'phoneNumber': _editedUser.phoneNumber,
+          'birthDate': _editedUser.birthDate,
+          'gender': _editedUser.gender,
+          'role': _editedUser.role
+        }; */
       }
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  TextFormField _getNameField() {
+    return TextFormField(
+      controller: _nameController,
+      keyboardType: TextInputType.text,
+      textInputAction: TextInputAction.next,
+      focusNode: _nameFocus,
+      onFieldSubmitted: (_) {
+        FocusScope.of(context).requestFocus(_emailFocus);
+      },
+      validator: ValidatorUtil.validateTextInput,
+      onSaved: (value) {
+        _editedUser = new User(
+            id: _editedUser.id,
+            fullName: value,
+            email: _editedUser.email,
+            phoneNumber: _editedUser.phoneNumber,
+            birthDate: _editedUser.birthDate,
+            gender: _editedUser.gender,
+            role: _editedUser.role);
+      },
+      decoration: InputDecoration(
+          hintText: 'your full name',
+          labelText: 'full name',
+          icon: Icon(Icons.text_fields),
+          fillColor: Colors.white),
+    );
+  }
+
+  TextFormField _getEmailField() {
+    return TextFormField(
+      controller: _emailController,
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      focusNode: _emailFocus,
+      onFieldSubmitted: (_) {
+        // FocusScope.of(context).requestFocus(_addressFocus);
+      },
+      // initialValue: _initValues['email'],
+      validator: ValidatorUtil.validateEmail,
+      onSaved: (value) {
+        _editedUser = new User(
+            id: _editedUser.id,
+            fullName: _editedUser.fullName,
+            email: value,
+            phoneNumber: _editedUser.phoneNumber,
+            birthDate: _editedUser.birthDate,
+            gender: _editedUser.gender,
+            role: _editedUser.role);
+      },
+      decoration: InputDecoration(
+          hintText: 'Your email',
+          labelText: 'email',
+          icon: Icon(Icons.email),
+          fillColor: Colors.white),
+    );
+  }
+
+  TextFormField _getPhoneNumberField() {
+    return TextFormField(
+      controller: _phoneNumberController,
+      keyboardType: TextInputType.phone,
+      textInputAction: TextInputAction.next,
+      focusNode: _phoneNumberFocus,
+      onFieldSubmitted: (_) {
+        // FocusScope.of(context).requestFocus(_addressFocus);
+      },
+      validator: ValidatorUtil.validatePhoneNumber,
+      onSaved: (value) {
+        _editedUser = new User(
+            id: _editedUser.id,
+            fullName: _editedUser.fullName,
+            email: _editedUser.email,
+            phoneNumber: value,
+            birthDate: _editedUser.birthDate,
+            gender: _editedUser.gender,
+            role: _editedUser.role);
+      },
+      decoration: InputDecoration(
+          hintText: 'Your phone number',
+          labelText: 'phone number',
+          icon: Icon(Icons.phone_iphone),
+          fillColor: Colors.white),
+    );
+  }
+
   RadioButtonGroup _getGenderRadioButtons() {
     return RadioButtonGroup(
       orientation: GroupedButtonsOrientation.HORIZONTAL,
-      margin: const EdgeInsets.only(left: 4.0),
+      padding: const EdgeInsets.only(left: 0.0, right: 0.0),
+      // margin: const EdgeInsets.only(left: 4.0),
       onSelected: (String selected) {
         Gender selectedGender;
 
@@ -122,6 +237,10 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
         setState(() {
           _editedUser = User(
               id: _editedUser.id,
+              fullName: _editedUser.fullName,
+              email: _editedUser.email,
+              phoneNumber: _editedUser.phoneNumber,
+              role: _editedUser.role,
               birthDate: _editedUser.birthDate,
               gender: selectedGender);
         });
@@ -134,6 +253,8 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
       picked: _editedUser.getGenderString(),
       itemBuilder: (Radio rb, Text txt, int i) {
         return Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             rb,
             txt,
@@ -150,6 +271,10 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
           setState(() {
             _editedUser = User(
                 id: _editedUser.id,
+                fullName: _editedUser.fullName,
+                email: _editedUser.email,
+                phoneNumber: _editedUser.phoneNumber,
+                role: _editedUser.role,
                 birthDate: value,
                 gender: _editedUser.gender);
           });
@@ -217,13 +342,22 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Row(
+                      _getNameField(),
+                      _getEmailField(),
+                      _getPhoneNumberField(),
+                      ListTile(
+                        contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                        leading: Icon(Icons.wc),
+                        title: _getGenderRadioButtons(),
+                        //subtitle: Text('gender'),
+                      ),
+                      /* Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text('Gender:'),
                           _getGenderRadioButtons(),
                         ],
-                      ),
+                      ), */
                       _getBirthdatePicker()
                     ],
                   ),

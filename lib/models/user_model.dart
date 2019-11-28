@@ -6,12 +6,18 @@ enum Role { Admin, Coordinator, Regular }
 
 class User {
   final String id;
+  final String fullName;
+  final String email;
+  final String phoneNumber;
   final Gender gender;
   final DateTime birthDate;
   final Role role;
 
   User(
       {@required this.id,
+      @required this.fullName,
+      @required this.email,
+      @required this.phoneNumber,
       @required this.gender,
       @required this.birthDate,
       @required this.role});
@@ -97,6 +103,9 @@ class User {
   }
 
   Map<String, dynamic> toJson() => {
+        "fullName": fullName,
+        "email": email,
+        "phoneNumber": phoneNumber,
         "gender": getGenderString(),
         "birthDate": birthDate,
         "role": getRoleString()
@@ -110,6 +119,9 @@ class User {
 
     return User(
         id: doc.documentID,
+        fullName: data["fullName"],
+        email: data["email"],
+        phoneNumber: data["phoneNumber"],
         gender: gender,
         birthDate: birthDate?.toDate(),
         role: role);
