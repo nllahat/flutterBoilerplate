@@ -90,6 +90,7 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
       gender: Gender.Other,
       role: Role.Regular);
   var _isLoading = false;
+  final _form = GlobalKey<FormState>(debugLabel: 'editUserForm');
   var _isInit = true;
 
   @override
@@ -112,15 +113,6 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
         _nameController.text = fbUser.displayName;
         _emailController.text = fbUser.email;
         _phoneNumberController.text = fbUser.phoneNumber;
-        /* _initValues = {
-          'id': _editedUser.id,
-          'fullName': _editedUser.fullName,
-          'email': _editedUser.email,
-          'phoneNumber': _editedUser.phoneNumber,
-          'birthDate': _editedUser.birthDate,
-          'gender': _editedUser.gender,
-          'role': _editedUser.role
-        }; */
       }
     }
     _isInit = false;
@@ -286,6 +278,14 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
       _isLoading = true;
     });
 
+    final isValid = _form.currentState.validate();
+
+    if (!isValid) {
+      return;
+    }
+
+    _form.currentState.save();
+
     try {
       User newUser = await Provider.of<UserService>(context, listen: false)
           .setOrAddUser(_editedUser);
@@ -308,6 +308,10 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
         ),
       );
     }
+
+    /* setState(() {
+      _isLoading = false;
+    }); */
   }
 
   Widget _doneButton() {
@@ -339,27 +343,31 @@ class _ExtraInfoFormState extends State<ExtraInfoForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      _getNameField(),
-                      _getEmailField(),
-                      _getPhoneNumberField(),
-                      ListTile(
-                        contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                        leading: Icon(Icons.wc),
-                        title: _getGenderRadioButtons(),
-                        //subtitle: Text('gender'),
-                      ),
-                      /* Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text('Gender:'),
-                          _getGenderRadioButtons(),
-                        ],
-                      ), */
-                      _getBirthdatePicker()
-                    ],
+                  Form(
+                    key: _form,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        _getNameField(),
+                        _getEmailField(),
+                        _getPhoneNumberField(),
+                        ListTile(
+                          contentPadding:
+                              EdgeInsets.only(left: 0.0, right: 0.0),
+                          leading: Icon(Icons.wc),
+                          title: _getGenderRadioButtons(),
+                          //subtitle: Text('gender'),
+                        ),
+                        /* Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('Gender:'),
+                            _getGenderRadioButtons(),
+                          ],
+                        ), */
+                        _getBirthdatePicker()
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 30,

@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boilerplate/models/organization_model.dart';
 import 'package:flutter_boilerplate/models/user_model.dart';
+import 'package:flutter_boilerplate/services/organizations_service.dart';
 import 'package:flutter_boilerplate/services/user_service.dart';
 import 'package:provider/provider.dart';
 
-class Users extends StatefulWidget {
-  Users({Key key}) : super(key: key);
+class Organizations extends StatefulWidget {
+  Organizations({Key key}) : super(key: key);
 
   @override
-  _UsersState createState() => _UsersState();
+  _OrganizationsState createState() => _OrganizationsState();
 }
 
-class _UsersState extends State<Users> {
-  List<User> _users;
+class _OrganizationsState extends State<Organizations> {
+  List<Organization> _organizations;
   @override
   void initState() {
     super.initState();
-    Provider.of<UserService>(context, listen: false).users.then((users) {
+    Provider.of<OrganizationService>(context, listen: false).organizationList.then((organizations) {
       setState(() {
-        _users = users;
+        _organizations = organizations;
       });
     }).catchError((error) {
       print(error);
@@ -25,31 +27,31 @@ class _UsersState extends State<Users> {
   }
 
   Future<void> _setUser(int index, Role role) async {
-    var editedUser = User(
-        id: _users[index].id,
-        fullName: _users[index].fullName,
-        birthDate: _users[index].birthDate,
-        email: _users[index].email,
-        gender: _users[index].gender,
-        phoneNumber: _users[index].phoneNumber,
+    /* var editedUser = User(
+        id: _organizations[index].id,
+        fullName: _organizations[index].fullName,
+        birthDate: _organizations[index].birthDate,
+        email: _organizations[index].email,
+        gender: _organizations[index].gender,
+        phoneNumber: _organizations[index].phoneNumber,
         role: role);
     editedUser = await Provider.of<UserService>(context, listen: false)
         .setOrAddUser(editedUser);
     setState(() {
-      _users[index] = editedUser;
-    });
+      _organizations[index] = editedUser;
+    }); */
   }
 
   @override
   Widget build(BuildContext context) {
-    return _users == null || _users.length == 0
+    return _organizations == null || _organizations.length == 0
         ? Container(child: Center(child: CircularProgressIndicator()))
         : ListView.builder(
-            itemCount: _users?.length,
+            itemCount: _organizations?.length,
             itemBuilder: (BuildContext ctxt, int index) {
-              var user = _users?.elementAt(index);
-              return UserListItem(
-                user: user,
+              var user = _organizations?.elementAt(index);
+              return OrganizationListItem(
+                organization: user,
                 setUser: (Role role) {
                   return _setUser(index, role);
                 },
@@ -58,18 +60,18 @@ class _UsersState extends State<Users> {
   }
 }
 
-class UserListItem extends StatefulWidget {
-  final User user;
+class OrganizationListItem extends StatefulWidget {
+  final Organization organization;
   final Function(Role role) setUser;
 
-  UserListItem({Key key, @required this.user, @required this.setUser})
+  OrganizationListItem({Key key, @required this.organization, @required this.setUser})
       : super(key: key);
 
   @override
-  _UserListItemState createState() => _UserListItemState();
+  _OrganizationListItemState createState() => _OrganizationListItemState();
 }
 
-class _UserListItemState extends State<UserListItem> {
+class _OrganizationListItemState extends State<OrganizationListItem> {
   var _isLoading = false;
 
   Color _getIconColorByRole(Role role) {
@@ -87,7 +89,7 @@ class _UserListItemState extends State<UserListItem> {
 
   @override
   Widget build(BuildContext context) {
-    var user = widget.user;
+    var user = widget.organization;
 
     return ExpansionTile(
       trailing: _isLoading

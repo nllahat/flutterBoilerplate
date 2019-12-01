@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boilerplate/models/firebase_exception.dart';
-import 'package:flutter_boilerplate/screens/authenticate/register.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/firebase_exception.dart';
+import '../../screens/authenticate/register.dart';
+import '../../utils/validation.dart';
 import '../../services/auth_service.dart';
 
 enum LogisterType { EmailAndPassword, Google }
@@ -46,12 +47,69 @@ class LogisterForm extends StatefulWidget {
 }
 
 class _LogisterFormState extends State<LogisterForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey(debugLabel: 'emailLoginForm');
+  final _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
   Map<String, String> _authData = {
     'email': '',
     'password': '',
   };
   var _isLoading = false;
+  var _showEmailLogin = false;
+
+  Column _getTextFields() {
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              InkWell(
+                child: SizedBox(
+                    height: 80,
+                    child: Icon(
+                      Icons.keyboard_backspace,
+                      size: 40.0,
+                    )),
+                onTap: () {
+                  setState(() {
+                    _showEmailLogin = !_showEmailLogin;
+                  });
+                },
+              ),
+            ],
+          ),
+          TextFormField(
+            // style: Theme.of(context).primaryTextTheme.display1,
+            decoration: InputDecoration(
+                // labelStyle: Theme.of(context).primaryTextTheme.headline,
+                labelText: 'Email'),
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            validator: ValidatorUtil.validateEmail,
+            onSaved: (value) {
+              _authData['email'] = value;
+            },
+          ),
+          TextFormField(
+            //style: Theme.of(context).primaryTextTheme.display1,
+            decoration: InputDecoration(
+                //labelStyle: Theme.of(context).primaryTextTheme.headline,
+                labelText: 'Password'),
+            obscureText: true,
+            controller: _passwordController,
+            validator: ValidatorUtil.validatePassword,
+            onSaved: (value) {
+              _authData['password'] = value;
+            },
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          _signInWithEmailButton()
+        ]);
+  }
 
   Widget _getOrDevider(BuildContext context) {
     return Row(
@@ -84,10 +142,14 @@ class _LogisterFormState extends State<LogisterForm> {
     );
   }
 
-  Widget _signInWithEmailButton() {
+  Widget _showSignInWithEmailButton() {
     return RaisedButton(
       color: Colors.white,
-      onPressed: () => _submit(LogisterType.EmailAndPassword),
+      onPressed: () {
+        setState(() {
+          _showEmailLogin = !_showEmailLogin;
+        });
+      },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -98,6 +160,21 @@ class _LogisterFormState extends State<LogisterForm> {
           Text('Sign in with Email',
               style: TextStyle(fontSize: 18.0, color: Colors.grey)),
           Spacer(),
+        ],
+      ),
+    );
+  }
+
+  Widget _signInWithEmailButton() {
+    return RaisedButton(
+      color: Colors.white,
+      onPressed: () => _submit(LogisterType.EmailAndPassword),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text('Sign in', style: TextStyle(fontSize: 18.0, color: Colors.grey)),
         ],
       ),
     );
@@ -197,25 +274,27 @@ class _LogisterFormState extends State<LogisterForm> {
         key: _formKey,
         child: _isLoading
             ? LinearProgressIndicator()
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _continueWithGoogleButton(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  _signInWithEmailButton(),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  _getOrDevider(context),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  _registerWithEmailButton(),
-                ],
-              ),
+            : !_showEmailLogin
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      _continueWithGoogleButton(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      _showSignInWithEmailButton(),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      _getOrDevider(context),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      _registerWithEmailButton(),
+                    ],
+                  )
+                : _getTextFields(),
       ),
     );
   }
