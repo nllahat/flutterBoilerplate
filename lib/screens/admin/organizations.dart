@@ -17,7 +17,9 @@ class _OrganizationsState extends State<Organizations> {
   @override
   void initState() {
     super.initState();
-    Provider.of<OrganizationService>(context, listen: false).organizationList.then((organizations) {
+    Provider.of<OrganizationService>(context, listen: false)
+        .organizationList
+        .then((organizations) {
       setState(() {
         _organizations = organizations;
       });
@@ -26,7 +28,7 @@ class _OrganizationsState extends State<Organizations> {
     });
   }
 
-  Future<void> _setUser(int index, Role role) async {
+  Future<void> _setOrganization(int index, Role role) async {
     /* var editedUser = User(
         id: _organizations[index].id,
         fullName: _organizations[index].fullName,
@@ -52,8 +54,8 @@ class _OrganizationsState extends State<Organizations> {
               var user = _organizations?.elementAt(index);
               return OrganizationListItem(
                 organization: user,
-                setUser: (Role role) {
-                  return _setUser(index, role);
+                setOrganization: (Role role) {
+                  return _setOrganization(index, role);
                 },
               );
             });
@@ -62,9 +64,10 @@ class _OrganizationsState extends State<Organizations> {
 
 class OrganizationListItem extends StatefulWidget {
   final Organization organization;
-  final Function(Role role) setUser;
+  final Function(Role role) setOrganization;
 
-  OrganizationListItem({Key key, @required this.organization, @required this.setUser})
+  OrganizationListItem(
+      {Key key, @required this.organization, @required this.setOrganization})
       : super(key: key);
 
   @override
@@ -89,7 +92,7 @@ class _OrganizationListItemState extends State<OrganizationListItem> {
 
   @override
   Widget build(BuildContext context) {
-    var user = widget.organization;
+    var organization = widget.organization;
 
     return ExpansionTile(
       trailing: _isLoading
@@ -101,26 +104,25 @@ class _OrganizationListItemState extends State<OrganizationListItem> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Icon(
-            Icons.account_circle,
+            Icons.home,
             size: 40.0,
-            color: _getIconColorByRole(user?.role),
           ),
         ],
       ),
-      title: Text(user?.fullName ?? ''),
+      title: Text(organization?.name ?? ''),
       initiallyExpanded: false,
       children: <Widget>[
         ListTile(
-          leading: Icon(Icons.star),
+          leading: Icon(Icons.people_outline),
           dense: true,
           title: Text(
-            'role:',
+            'managers:',
             style: TextStyle(fontSize: 20.0),
           ),
-          trailing: DropdownButton<String>(
+          /* trailing: DropdownButton<String>(
             elevation: 8,
             icon: Container(),
-            value: user?.getRoleString(),
+            value: organization?.getRoleString(),
             onChanged: (String newValue) async {
               setState(() {
                 _isLoading = true;
@@ -136,7 +138,7 @@ class _OrganizationListItemState extends State<OrganizationListItem> {
                 child: Text(value, style: TextStyle(fontSize: 20.0)),
               );
             }).toList(),
-          ),
+          ), */
         ),
         // Text(user?.role?.toString()?.split('.')?.elementAt(1) ?? '')
       ],

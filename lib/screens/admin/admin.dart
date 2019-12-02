@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boilerplate/screens/admin/organizations.dart';
 import 'package:flutter_boilerplate/screens/admin/users.dart';
 
 class Admin extends StatelessWidget {
@@ -33,15 +34,7 @@ class Admin extends StatelessWidget {
         body: new TabBarView(
           children: <Widget>[
             Users(),
-            new Container(
-              color: Colors.blueGrey,
-              child: new Center(
-                child: new Text(
-                  "Second",
-                  style: textStyle(),
-                ),
-              ),
-            ),
+            Organizations(),
             new Container(
               color: Colors.teal,
               child: new Center(

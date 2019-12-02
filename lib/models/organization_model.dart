@@ -11,12 +11,12 @@ class Organization {
 
   factory Organization.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data;
-    List<DocumentReference> managersDocRef =
+    List<DocumentReference> managersDocRef = data["managers"] == null ? null :
         new List<DocumentReference>.from(data["managers"]);
 
     return Organization(
         id: doc.documentID,
         name: data["name"] ?? "",
-        managers: managersDocRef.map((elem) => elem.documentID).toList());
+        managers: managersDocRef?.map((elem) => elem.documentID)?.toList());
   }
 }

@@ -29,6 +29,21 @@ class OrganizationService {
     });
   }
 
+  Future<Organization> setOrAddUser(Organization organization) async {
+    Map<String, dynamic> jsonMap = organization.toJson();
+
+    try {
+      DocumentReference docRef = organizationsCollection.document(organization.id);
+      await docRef.setData(jsonMap, merge: true);
+      print("Document updated with ID: ${docRef.documentID}");
+
+      return Organization.fromFirestore(await docRef.get());
+    } catch (e) {
+      print("Error adding document: $e");
+      throw e;
+    }
+  }
+
   Future<Organization> addOrganization(Organization organization) async {
     Map<String, dynamic> jsonMap = organization.toJson();
 
