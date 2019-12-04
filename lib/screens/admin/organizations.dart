@@ -1,9 +1,12 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_boilerplate/models/organization_model.dart';
-import 'package:flutter_boilerplate/models/user_model.dart';
-import 'package:flutter_boilerplate/services/organizations_service.dart';
-import 'package:flutter_boilerplate/services/user_service.dart';
 import 'package:provider/provider.dart';
+
+import '../../models/organization_model.dart';
+import '../../models/user_model.dart';
+import '../../services/organizations_service.dart';
+import '../../services/user_service.dart';
+
 
 class Organizations extends StatefulWidget {
   Organizations({Key key}) : super(key: key);
@@ -118,6 +121,9 @@ class _OrganizationListItemState extends State<OrganizationListItem> {
           title: Text(
             'managers:',
             style: TextStyle(fontSize: 20.0),
+          ),
+          trailing: AutoCompleteTextField<User>(
+
           ),
           /* trailing: DropdownButton<String>(
             elevation: 8,
